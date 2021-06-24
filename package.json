@@ -1,0 +1,56 @@
+{
+  "_from": "mysql-redis@0.7.2",
+  "_id": "mysql-redis@0.7.2",
+  "_inBundle": false,
+  "_integrity": "sha512-YqKM4vVn+Iy1hzZnxZ8lf0nMl7/N1L9ESguYkDnD2t5DmYGKUZsiJZcF/peeM9ea9vDlrGXnOBuwUDgqPrn8vQ==",
+  "_location": "/mysql-redis",
+  "_phantomChildren": {},
+  "_requested": {
+    "type": "version",
+    "registry": true,
+    "raw": "mysql-redis@0.7.2",
+    "name": "mysql-redis",
+    "escapedName": "mysql-redis",
+    "rawSpec": "0.7.2",
+    "saveSpec": null,
+    "fetchSpec": "0.7.2"
+  },
+  "_requiredBy": [
+    "#USER",
+    "/"
+  ],
+  "_resolved": "https://registry.npmjs.org/mysql-redis/-/mysql-redis-0.7.2.tgz",
+  "_shasum": "7f59798bdbace8253d128d132c85164379def1d6",
+  "_spec": "mysql-redis@0.7.2",
+  "_where": "/home/vika/work/public-api",
+  "bundleDependencies": false,
+  "dependencies": {},
+  "deprecated": false,
+  "description": "caching layer for mysql",
+  "devDependencies": {
+    "async-redis": "^1.1.7",
+    "jasmine-node": "^3.0.0",
+    "mysql2": "^1.7.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VoicenterTeam/mysql2-redis"
+  },
+  "keywords": [
+    "node",
+    "mysql2",
+    "mysql",
+    "ioredis",
+    "redis",
+    "cache",
+    "caching",
+    "layer"
+  ],
+  "license": "MIT",
+  "main": "index.js",
+  "name": "mysql-redis",
+  "scripts": {
+    "test": "jasmine-node spec --verbose"
+  },
+  "version": "0.7.2"
+}
