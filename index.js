@@ -1,5 +1,7 @@
 const crypto = require('crypto');
-const md5Hash = (sql) => crypto.createHash('md5').update(sql).digest('base64');
+const md5Hash = (sql) => crypto.createHash('md5')
+    .update(sql)
+    .digest('base64');
 const hash = (sql) => md5Hash(sql);
 
 const parseRedisResult = (redisResult, key) => {
@@ -8,7 +10,7 @@ const parseRedisResult = (redisResult, key) => {
 
         return result;
     } catch (e) {
-        return [redisResult, [{cacheHit: key}]];
+        return [redisResult, [{ cacheHit: key }]];
     }
 };
 
@@ -35,6 +37,24 @@ class MysqlRedis {
                 this.mysqlConn.query(sql,
                     Array.isArray(values) ? values : [],
                     (mysqlErr, mysqlResult, fields) => cb(mysqlErr, mysqlResult, fields));
+            } else {
+                return cb(null, parseRedisResult(redisResult, key));
+            }
+        });
+        this.redisClient.get(key, (redisErr, redisResult) => {
+            if (redisErr || redisResult == null) {
+                this.mysqlConn.query(sql,
+                    Array.isArray(values) ? values : [],
+                    (mysqlErr, mysqlResult) => {
+                        if (!redisErr) {
+                            this.redisClient.set(key,
+                                JSON.stringify(
+                                    mysqlResult.length > 0 && Array.isArray(mysqlResult[0])
+                                        ? [mysqlResult[0]]
+                                        : mysqlResult
+                                ));
+                        }
+                    });
             } else {
                 return cb(null, parseRedisResult(redisResult, key));
             }
