@@ -1,0 +1,20 @@
+{
+  "extends": "airbnb",
+  "parserOptions": {
+    "ecmaVersion": 2020
+  },
+  "rules": {
+    "no-console": "off",
+    "max-len": ["error", { "code": 200 }],
+    "no-param-reassign": "warn",
+    "dot-notation": "warn",
+    "class-methods-use-this": "warn",
+    "no-restricted-syntax": [
+        "error",
+      {
+        "selector": "CallExpression[callee.object.name='console'][callee.property.name!=/^(log|warn|error|info|trace|dir)$/]",
+        "message": "Unexpected property on console object was called"
+      }
+    ]
+  }
+}
