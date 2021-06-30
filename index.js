@@ -1,13 +1,15 @@
 const crypto = require('crypto');
-const md5Hash = (sql) => crypto.createHash('md5')
+
+const md5Hash = (sql) => crypto
+    .createHash('md5')
     .update(sql)
     .digest('base64');
+
 const hash = (sql) => md5Hash(sql);
 
 const parseRedisResult = (redisResult, key) => {
     try {
         const result = JSON.parse(redisResult);
-
         return result;
     } catch (e) {
         return [redisResult, [{cacheHit: key}]];
@@ -34,12 +36,13 @@ class MysqlRedis {
 
         this.redisClient.get(key, (redisErr, redisResult) => {
             if (redisErr || redisResult == null) {
-                this.mysqlConn.query(sql, (mysqlErr, mysqlResult, fields) => {
+                this.mysqlConn.query(
+                    sql,
+                    (mysqlErr, mysqlResult, fields) => {
                     const mysqlJSON = JSON.stringify(
                         mysqlResult.length > 0 && Array.isArray(mysqlResult[0])
                             ? [mysqlResult[0]]
-                            : mysqlResult
-                    );
+                            : mysqlResult );
                     if (!redisErr) {
                         this.redisClient.set(key, mysqlJSON);
                     }
