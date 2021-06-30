@@ -12,7 +12,7 @@ const parseRedisResult = (redisResult, key) => {
         const result = JSON.parse(redisResult);
         return result;
     } catch (e) {
-        return [redisResult, [{cacheHit: key}]];
+        return [redisResult, [{ cacheHit: key }]];
     }
 };
 
@@ -39,15 +39,17 @@ class MysqlRedis {
                 this.mysqlConn.query(
                     sql,
                     (mysqlErr, mysqlResult, fields) => {
-                    const mysqlJSON = JSON.stringify(
-                        mysqlResult.length > 0 && Array.isArray(mysqlResult[0])
-                            ? [mysqlResult[0]]
-                            : mysqlResult );
-                    if (!redisErr) {
-                        this.redisClient.set(key, mysqlJSON);
-                    }
-                    return cb(mysqlErr, mysqlResult, fields);
-                });
+                        const mysqlJSON = JSON.stringify(
+                            mysqlResult.length > 0 && Array.isArray(mysqlResult[0])
+                                ? [mysqlResult[0]]
+                                : mysqlResult,
+                        );
+                        if (!redisErr) {
+                            this.redisClient.set(key, mysqlJSON);
+                        }
+                        return cb(mysqlErr, mysqlResult, fields);
+                    },
+                );
             } else {
                 return cb(null, parseRedisResult(redisResult, key));
             }
