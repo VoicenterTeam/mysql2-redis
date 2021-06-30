@@ -10,7 +10,7 @@ const parseRedisResult = (redisResult, key) => {
 
         return result;
     } catch (e) {
-        return [redisResult, [{ cacheHit: key }]];
+        return [redisResult, [{cacheHit: key}]];
     }
 };
 
@@ -34,27 +34,17 @@ class MysqlRedis {
 
         this.redisClient.get(key, (redisErr, redisResult) => {
             if (redisErr || redisResult == null) {
-                this.mysqlConn.query(sql,
-                    Array.isArray(values) ? values : [],
-                    (mysqlErr, mysqlResult, fields) => cb(mysqlErr, mysqlResult, fields));
-            } else {
-                return cb(null, parseRedisResult(redisResult, key));
-            }
-        });
-        this.redisClient.get(key, (redisErr, redisResult) => {
-            if (redisErr || redisResult == null) {
-                this.mysqlConn.query(sql,
-                    Array.isArray(values) ? values : [],
-                    (mysqlErr, mysqlResult) => {
-                        if (!redisErr) {
-                            this.redisClient.set(key,
-                                JSON.stringify(
-                                    mysqlResult.length > 0 && Array.isArray(mysqlResult[0])
-                                        ? [mysqlResult[0]]
-                                        : mysqlResult
-                                ));
-                        }
-                    });
+                this.mysqlConn.query(sql, (mysqlErr, mysqlResult, fields) => {
+                    const mysqlJSON = JSON.stringify(
+                        mysqlResult.length > 0 && Array.isArray(mysqlResult[0])
+                            ? [mysqlResult[0]]
+                            : mysqlResult
+                    );
+                    if (!redisErr) {
+                        this.redisClient.set(key, mysqlJSON);
+                    }
+                    return cb(mysqlErr, mysqlResult, fields);
+                });
             } else {
                 return cb(null, parseRedisResult(redisResult, key));
             }
