@@ -38,6 +38,7 @@ class MysqlRedis {
       if (redisErr || redisResult == null) {
         this.mysqlConn.query(
           sql,
+          Array.isArray(values) ? values : [],
           (mysqlErr, mysqlResult, fields) => {
             const mysqlJSON = JSON.stringify(
               mysqlResult.length > 0 && Array.isArray(mysqlResult[0])
