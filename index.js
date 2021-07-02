@@ -1,12 +1,5 @@
 const crypto = require('crypto');
 
-/** The update method is used to push data to later be turned into
- *  a hash with the digest method. update can be invoked multiple
- *  times to ingest streaming data, such as buffers from a file read stream.
- *  The argument for digest represents the output format, and may either be "binary",
- *  "hex" or "base64". It defaults to binary.
- */
-
 const hash = (sql) => crypto
   .createHash('md5')
   .update(sql)
