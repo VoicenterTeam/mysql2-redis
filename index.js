@@ -12,12 +12,12 @@ const defaultCacheOptions = {
   caching: 0,
 };
 
-const parseRedisResult = (redisResult, key) => {
+const parseRedisResult = (redisResult) => {
   try {
     const result = JSON.parse(redisResult);
     return result;
-  } catch (e) {
-    return [redisResult, [{ cacheHit: key }]];
+  } catch (error) {
+    return error;
   }
 };
 
@@ -32,7 +32,7 @@ class MysqlRedis {
         keyPrefix: defaultCacheOptions.keyPrefix,
         hashType: defaultCacheOptions.hashType,
         caching: defaultCacheOptions.caching
-      }
+      };
     } else {
       this.cacheOptions = {
         expire: cacheOptions.expire,
@@ -62,22 +62,23 @@ class MysqlRedis {
         this.mysqlConn.query(
           sql, checkValues(values),
           (mysqlErr, mysqlResult, fields) => {
-            const checkMysqlResult = () => {
-              if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
-                return Array.from(mysqlResult[0]);
-              } else {
-                return mysqlResult;
-              }
-            };
-            const mysqlJSON = JSON.stringify(checkMysqlResult());
             if (!redisErr) {
+              const checkMysqlResult = () => {
+                if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
+                  return Array.from(mysqlResult[0]);
+                } else {
+                  return mysqlResult;
+                }
+              };
+              const mysqlJSON = JSON.stringify(checkMysqlResult());
+
               this.redisClient.set(key, mysqlJSON);
             }
             return cb(mysqlErr, mysqlResult, fields);
           },
         );
       } else {
-        return cb(null, parseRedisResult(redisResult, key));
+        return cb(null, parseRedisResult(redisResult));
       }
     });
   }
