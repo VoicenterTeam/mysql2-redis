@@ -38,7 +38,7 @@ class MysqlRedis {
     this.mysqlConn = mysqlConn;
     this.redisClient = redisClient;
 
-    this.cacheOpttions = { ...defaultCacheOptions, ...cacheOptions };
+    this.cacheOptions = { ...defaultCacheOptions, ...cacheOptions };
   }
 
   query(sql, values, callback) {
