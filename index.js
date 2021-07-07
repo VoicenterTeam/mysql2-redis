@@ -17,7 +17,8 @@ const parseRedisResult = (redisResult) => {
     const result = JSON.parse(redisResult);
     return result;
   } catch (error) {
-    return error;
+    console.log(error);
+    return '';
   }
 };
 
