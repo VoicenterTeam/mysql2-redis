@@ -5,6 +5,21 @@ const hash = (sql) => crypto
   .update(sql)
   .digest('base64');
 
+const checkValues = (values) => {
+  if (Array.isArray(values)) {
+    return values;
+  } else {
+    values = Array.from(values);
+    return values;
+  }
+};
+
+const checkMysqlResult = (mysqlResult) => {
+  if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
+    return Array.from(mysqlResult[0]);
+  } return mysqlResult;
+};
+
 const defaultCacheOptions = {
   expire: 2629746,
   keyPrefix: 'sql.',
@@ -13,13 +28,9 @@ const defaultCacheOptions = {
 };
 
 const parseRedisResult = (redisResult) => {
-  try {
-    const result = JSON.parse(redisResult);
-    return result;
-  } catch (error) {
-    console.log(error);
-    return '';
-  }
+  const result = JSON.parse(redisResult);
+
+  return result;
 };
 
 class MysqlRedis {
@@ -27,60 +38,27 @@ class MysqlRedis {
     this.mysqlConn = mysqlConn;
     this.redisClient = redisClient;
 
-    if (!cacheOptions) {
-      this.cacheOptions = {
-        expire: defaultCacheOptions.expire,
-        keyPrefix: defaultCacheOptions.keyPrefix,
-        hashType: defaultCacheOptions.hashType,
-        caching: defaultCacheOptions.caching
-      };
-    } else {
-      this.cacheOptions = {
-        expire: cacheOptions.expire,
-        keyPrefix: cacheOptions.keyPrefix,
-        hashType: cacheOptions.hashType,
-        caching: cacheOptions.caching,
-      };
-    }
+    this.cacheOpttions = { ...defaultCacheOptions, ...cacheOptions };
   }
 
-  query(sql, values, options, callback) {
-    const cb = callback || (options || values);
+  query(sql, values, callback) {
     const selectSQL = sql + JSON.stringify(values);
     const hashType = this.cacheOptions;
     const key = hash(selectSQL, hashType);
 
     this.redisClient.get(key, (redisErr, redisResult) => {
       if (redisErr || redisResult == null) {
-        const checkValues = (values) => {
-          if (Array.isArray(values)) {
-            return values;
-          } else {
-            values = Array.from(values);
-            return values;
-          }
-        };
-        this.mysqlConn.query(
-          sql, checkValues(values),
-          (mysqlErr, mysqlResult, fields) => {
-            if (!redisErr) {
-              const checkMysqlResult = () => {
-                if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
-                  return Array.from(mysqlResult[0]);
-                } else {
-                  return mysqlResult;
-                }
-              };
-              const mysqlJSON = JSON.stringify(checkMysqlResult());
+        this.mysqlConn.query(sql, checkValues(values), (mysqlErr, mysqlResult, fields) => {
+          const mysqlJSON = JSON.stringify(checkMysqlResult(mysqlResult));
 
-              this.redisClient.set(key, mysqlJSON);
-            }
-            return cb(mysqlErr, mysqlResult, fields);
-          },
-        );
+          this.redisClient.set(key, mysqlJSON);
+          return callback(mysqlErr, mysqlResult, fields);
+        });
       } else {
-        return cb(null, parseRedisResult(redisResult));
+        console.log(parseRedisResult(redisResult));
+        return callback(null, parseRedisResult(redisResult));
       }
+      return '';
     });
   }
 }
