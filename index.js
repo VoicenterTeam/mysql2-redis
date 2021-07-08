@@ -1,13 +1,12 @@
 const crypto = require('crypto');
 
-const hash = (sql) => crypto
-  .createHash('md5')
-  .update(sql)
-  .digest('base64');
-
 const checkValues = (values) => (Array.isArray(values) ? values : Array.from(values));
 
-const defaultCacheOptions = { keyPrefix: 'sql.' };
+const defaultCacheOptions = {
+  keyPrefix: 'sql.',
+  algorithm: 'md5',
+  encoding: 'base64',
+};
 
 const checkMysqlResult = (mysqlResult) => {
   if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
@@ -30,6 +29,11 @@ class MysqlRedis {
 
   query(sql, values, callback) {
     const selectSQL = sql + JSON.stringify(values);
+    const hash = () => crypto
+      .createHash(this.cacheOptions.algorithm)
+      .update(sql)
+      .digest(this.cacheOptions.encoding);
+
     const key = this.cacheOptions.keyPrefix + hash(selectSQL);
 
     this.redisClient.get(key, (redisErr, redisResult) => {
