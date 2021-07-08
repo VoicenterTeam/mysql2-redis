@@ -7,6 +7,8 @@ const hash = (sql) => crypto
 
 const checkValues = (values) => (Array.isArray(values) ? values : Array.from(values));
 
+const defaultCacheOptions = { keyPrefix: 'sql.' };
+
 const checkMysqlResult = (mysqlResult) => {
   if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
     return Array.from(mysqlResult[0]);
@@ -23,11 +25,12 @@ class MysqlRedis {
   constructor(mysqlConn, redisClient) {
     this.mysqlConn = mysqlConn;
     this.redisClient = redisClient;
+    this.cacheOptions = Object.values(defaultCacheOptions);
   }
 
   query(sql, values, callback) {
     const selectSQL = sql + JSON.stringify(values);
-    const key = hash(selectSQL);
+    const key = this.cacheOptions + hash(selectSQL);
 
     this.redisClient.get(key, (redisErr, redisResult) => {
       if (redisErr || redisResult == null) {
