@@ -31,11 +31,11 @@ class MysqlRedis {
 
     this.redisClient.get(key, (redisErr, redisResult) => {
       if (redisErr || redisResult == null) {
-        this.mysqlConn.query(sql, checkValues(values), (mysqlErr, mysqlResult, fields) => {
+        this.mysqlConn.query(sql, checkValues(values), (mysqlErr, mysqlResult) => {
           const mysqlJSON = JSON.stringify(checkMysqlResult(mysqlResult));
 
           this.redisClient.set(key, mysqlJSON);
-          return callback(mysqlErr, mysqlResult, fields);
+          return callback(mysqlErr, mysqlResult);
         });
       } else {
         return callback(null, parseRedisResult(redisResult));
