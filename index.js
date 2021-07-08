@@ -8,6 +8,11 @@ const defaultCacheOptions = {
   encoding: 'base64',
 };
 
+const hash = (sql) => crypto
+  .createHash(defaultCacheOptions.algorithm)
+  .update(sql)
+  .digest(defaultCacheOptions.encoding);
+
 const checkMysqlResult = (mysqlResult) => {
   if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
     return Array.from(mysqlResult[0]);
@@ -29,11 +34,6 @@ class MysqlRedis {
 
   query(sql, values, callback) {
     const selectSQL = sql + JSON.stringify(values);
-    const hash = () => crypto
-      .createHash(this.cacheOptions.algorithm)
-      .update(sql)
-      .digest(this.cacheOptions.encoding);
-
     const key = this.cacheOptions.keyPrefix + hash(selectSQL);
 
     this.redisClient.get(key, (redisErr, redisResult) => {
