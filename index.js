@@ -5,26 +5,12 @@ const hash = (sql) => crypto
   .update(sql)
   .digest('base64');
 
-const checkValues = (values) => {
-  if (Array.isArray(values)) {
-    return values;
-  } else {
-    values = Array.from(values);
-    return values;
-  }
-};
+const checkValues = (values) => (Array.isArray(values) ? values : Array.from(values));
 
 const checkMysqlResult = (mysqlResult) => {
   if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
     return Array.from(mysqlResult[0]);
   } return mysqlResult;
-};
-
-const defaultCacheOptions = {
-  expire: 2629746,
-  keyPrefix: 'sql.',
-  hashType: 'md5',
-  caching: 0,
 };
 
 const parseRedisResult = (redisResult) => {
@@ -34,17 +20,14 @@ const parseRedisResult = (redisResult) => {
 };
 
 class MysqlRedis {
-  constructor(mysqlConn, redisClient, cacheOptions) {
+  constructor(mysqlConn, redisClient) {
     this.mysqlConn = mysqlConn;
     this.redisClient = redisClient;
-
-    this.cacheOptions = { ...defaultCacheOptions, ...cacheOptions };
   }
 
   query(sql, values, callback) {
     const selectSQL = sql + JSON.stringify(values);
-    const hashType = this.cacheOptions;
-    const key = hash(selectSQL, hashType);
+    const key = hash(selectSQL);
 
     this.redisClient.get(key, (redisErr, redisResult) => {
       if (redisErr || redisResult == null) {
