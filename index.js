@@ -22,15 +22,15 @@ const parseRedisResult = (redisResult) => {
 };
 
 class MysqlRedis {
-  constructor(mysqlConn, redisClient) {
+  constructor(mysqlConn, redisClient, cacheOptions) {
     this.mysqlConn = mysqlConn;
     this.redisClient = redisClient;
-    this.cacheOptions = Object.values(defaultCacheOptions);
+    this.cacheOptions = { ...defaultCacheOptions, ...cacheOptions };
   }
 
   query(sql, values, callback) {
     const selectSQL = sql + JSON.stringify(values);
-    const key = this.cacheOptions + hash(selectSQL);
+    const key = this.cacheOptions.keyPrefix + hash(selectSQL);
 
     this.redisClient.get(key, (redisErr, redisResult) => {
       if (redisErr || redisResult == null) {
