@@ -55,7 +55,6 @@ class MysqlRedis {
           return callback(mysqlErr, mysqlResult, fields);
         });
       } else {
-        console.log(parseRedisResult(redisResult));
         return callback(null, parseRedisResult(redisResult));
       }
       return '';
