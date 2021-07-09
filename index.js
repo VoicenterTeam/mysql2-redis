@@ -8,23 +8,6 @@ const defaultCacheOptions = {
   encoding: 'base64',
 };
 
-const hash = (sql) => crypto
-  .createHash(defaultCacheOptions.algorithm)
-  .update(sql)
-  .digest(defaultCacheOptions.encoding);
-
-const checkMysqlResult = (mysqlResult) => {
-  if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
-    return Array.from(mysqlResult[0]);
-  } return mysqlResult;
-};
-
-const parseRedisResult = (redisResult) => {
-  const result = JSON.parse(redisResult);
-
-  return result;
-};
-
 class MysqlRedis {
   constructor(mysqlConn, redisClient, cacheOptions) {
     this.mysqlConn = mysqlConn;
@@ -32,20 +15,39 @@ class MysqlRedis {
     this.cacheOptions = { ...defaultCacheOptions, ...cacheOptions };
   }
 
+  hash(sql) {
+    return crypto
+      .createHash(this.cacheOptions.algorithm)
+      .update(sql)
+      .digest(this.cacheOptions.encoding);
+  }
+
+  checkMysqlResult(mysqlResult) {
+    if (mysqlResult.length > 0 && Array.isArray(mysqlResult[0])) {
+      return Array.from(mysqlResult[0]);
+    } return mysqlResult;
+  }
+
+  parseRedisResult(redisResult) {
+    const result = JSON.parse(redisResult);
+
+    return result;
+  }
+
   query(sql, values, callback) {
     const selectSQL = sql + JSON.stringify(values);
-    const key = this.cacheOptions.keyPrefix + hash(selectSQL);
+    const key = this.cacheOptions.keyPrefix + this.hash(selectSQL);
 
     this.redisClient.get(key, (redisErr, redisResult) => {
       if (redisErr || redisResult == null) {
         this.mysqlConn.query(sql, checkValues(values), (mysqlErr, mysqlResult) => {
-          const mysqlJSON = JSON.stringify(checkMysqlResult(mysqlResult));
+          const mysqlJSON = JSON.stringify(this.checkMysqlResult(mysqlResult));
 
           this.redisClient.set(key, mysqlJSON);
           return callback(mysqlErr, mysqlResult);
         });
       } else {
-        return callback(null, parseRedisResult(redisResult));
+        return callback(null, this.parseRedisResult(redisResult));
       }
       return '';
     });
