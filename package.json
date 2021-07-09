@@ -1,5 +1,5 @@
 {
-  "name": "mysql2-redis",
+  "name": "@voicenter/mysql2-redis",
   "version": "1.0.0",
   "description": "mysql2-redis",
   "main": "index.js",
@@ -10,8 +10,8 @@
     "type": "git",
     "url": "git+https://github.com/VoicenterTeam/mysql2-redis.git"
   },
-  "author": "SVA",
-  "license": "ISC",
+  "author": "Voicenter",
+  "license": "MIT",
   "bugs": {
     "url": "https://github.com/VoicenterTeam/mysql2-redis/issues"
   },
