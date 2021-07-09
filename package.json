@@ -16,9 +16,6 @@
     "url": "https://github.com/VoicenterTeam/mysql2-redis/issues"
   },
   "homepage": "https://github.com/VoicenterTeam/mysql2-redis#readme",
-  "dependencies": {
-    "crypto": "^1.0.1"
-  },
   "devDependencies": {
     "eslint": "^7.29.0",
     "eslint-config-airbnb": "^18.2.1",
