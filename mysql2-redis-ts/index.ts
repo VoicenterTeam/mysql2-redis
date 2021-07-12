@@ -2,13 +2,13 @@ import crypto = require('crypto');
 
 const defaultCacheOptions: {
     keyPrefix: string; algorithm: string; encoding: string; colorCode: string; debug: boolean
-    } = {
-        keyPrefix: 'sql.',
-        algorithm: 'md5',
-        encoding: 'base64',
-        colorCode: '31',
-        debug: false
-    };
+} = {
+    keyPrefix: 'sql.',
+    algorithm: 'md5',
+    encoding: 'base64',
+    colorCode: '31',
+    debug: false
+};
 
 class MysqlRedis {
     private mysqlConn: any;
