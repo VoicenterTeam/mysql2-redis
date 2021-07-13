@@ -1,4 +1,4 @@
-interface Params extends Methods {
+interface MysqlRedisInterface extends Methods {
   mysqlConn: any;
   redisClient: any;
   cacheOptions: any;
@@ -21,7 +21,7 @@ interface Default {
 }
 
 export {
-  Params,
+  MysqlRedisInterface,
   Methods,
   Default,
 }

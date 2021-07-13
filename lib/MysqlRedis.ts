@@ -1,7 +1,7 @@
 import * as crypto from "crypto";
-import { Default, Params } from "./interfaces";
+import { Default, MysqlRedisInterface } from "./interfaces";
 
-export class MysqlRedis implements Params {
+export class MysqlRedis implements MysqlRedisInterface {
   mysqlConn: any;
   redisClient: any;
   cacheOptions: any;
