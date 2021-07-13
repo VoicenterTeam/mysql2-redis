@@ -5,6 +5,8 @@
     "allowJs": true,
     "checkJs": true,
     "strict": true,
+    "outDir": "dist",
+    "declaration": true
   },
   "exclude": [
     "node_modules"

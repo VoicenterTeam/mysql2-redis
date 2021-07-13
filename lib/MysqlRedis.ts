@@ -1,7 +1,7 @@
-import crypto = require('crypto');
-import {Default, Params} from "./interfaces";
+import * as crypto from "crypto";
+import { Default, Params } from "./interfaces";
 
-class MysqlRedis implements Params {
+export class MysqlRedis implements Params {
   mysqlConn: any;
   redisClient: any;
   cacheOptions: any;
@@ -78,5 +78,3 @@ class MysqlRedis implements Params {
     console.log(`[${new Date().toLocaleTimeString()}] \x1b[${this.cacheOptions.colorCode}mmysql2-redis\x1b[0m: ${message}`);
   }
 }
-
-export { MysqlRedis };
