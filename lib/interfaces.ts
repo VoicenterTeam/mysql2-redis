@@ -1,10 +1,10 @@
-interface MainParams extends MainMethods {
+interface Params extends Methods {
     mysqlConn: any;
     redisClient: any;
     cacheOptions: any;
 }
 
-interface MainMethods {
+interface Methods {
     hash(sql: string): string;
     checkValues(values: string[]): string[];
     checkMysqlResult(mysqlResult: object[]): object[];
@@ -21,7 +21,7 @@ interface Default {
 }
 
 export {
-    MainParams,
-    MainMethods,
+    Params,
+    Methods,
     Default,
 }
