@@ -1,25 +1,23 @@
 import crypto = require('crypto');
 import { Default, Params } from "./interfaces";
 
-let defaultCacheOptions: Default;
-
-defaultCacheOptions = {
-  keyPrefix: 'sql.',
-  algorithm: 'md5',
-  encoding: 'base64',
-  colorCode: '31',
-  debug: false
-};
-
 class MysqlRedis implements Params {
   mysqlConn: any;
   redisClient: any;
   cacheOptions: any;
 
+  defaultCacheOptions: Default = {
+      keyPrefix: 'sql.',
+      algorithm: 'md5',
+      encoding: 'base64',
+      colorCode: '31',
+      debug: false
+  };
+
   constructor(mysqlConn: any, redisClient: any, cacheOptions: any) {
     this.mysqlConn = mysqlConn;
     this.redisClient = redisClient;
-    this.cacheOptions = { ...defaultCacheOptions, ...cacheOptions };
+    this.cacheOptions = { ...this.defaultCacheOptions, ...cacheOptions };
   }
 
   hash(sql: string) {
