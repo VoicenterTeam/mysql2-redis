@@ -15,9 +15,13 @@ In redis, the hash and query results are stored as key-value pair
 ### Pre-Requisites
 Internally MysqlRedis relies on mysql2's `query` function and redis's `get` and `set` functions
 
-### Installing
+## How to install
 `npm i @voicenter/mysql2-redis`
 
+Importing using ES6 modules:
+
+`import { MysqlRedis } from '@voicenter/mysql2-redis';
+`
 ### Usage
 ```js
 const { MysqlRedis } = require("@voicenter/mysql2-redis");
@@ -41,7 +45,7 @@ const defaultCacheOptions = {
 };
 ```
 
-Options can be specified when creating mysqlRedis instance or overriden at the time of query.
+Options can be specified when creating mysqlRedis instance or overridden at the time of query.
 At query time, you can also provide a custom hash as *cacheOptions.hash*
 
 #### Example
