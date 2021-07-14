@@ -1,6 +1,6 @@
 {
   "name": "@voicenter/mysql2-redis",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "description": "mysql2-redis",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -10,7 +10,7 @@
   "scripts": {
     "build": "tsc --build",
     "start": "tsc && node dist/index.js",
-    "prepublish": "npm run build"
+    "prepublish": "tsc"
   },
   "repository": {
     "type": "git",
