@@ -13,6 +13,7 @@ interface Methods {
 }
 
 interface Default {
+  expire: number;
   keyPrefix: string;
   algorithm: string;
   encoding: string;
