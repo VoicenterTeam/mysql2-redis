@@ -7,7 +7,7 @@ export class MysqlRedis implements MysqlRedisInterface {
   cacheOptions: any;
 
   defaultCacheOptions: Default = {
-    expire: 15,
+    expire: 10,
     keyPrefix: 'sql.',
     algorithm: 'md5',
     encoding: 'base64',
@@ -61,7 +61,7 @@ export class MysqlRedis implements MysqlRedisInterface {
             this.log(`creating new key ${key}`);
           }
 
-          this.redisClient.set(key, mysqlJSON);
+          this.redisClient.set(key, mysqlJSON,'EX',this.cacheOptions.expire);
 
           return callback(mysqlErr, mysqlResult);
         });
@@ -70,10 +70,8 @@ export class MysqlRedis implements MysqlRedisInterface {
       if (this.cacheOptions.debug) {
         this.log(`key ${key} successfully found`);
       }
-
       return callback(null, JSON.parse(redisResult));
     });
-    this.redisClient.expire(key, this.cacheOptions.expire);
   }
 
   log(message: string): void {
