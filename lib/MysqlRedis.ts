@@ -40,7 +40,7 @@ export class MysqlRedis implements MysqlRedisInterface {
     return mysqlResult;
   }
 
-  query(sql: string, values: string[], callback: any): any {
+  query(sql: string, values: string[], redisOpt: any, callback: any): any {
     const query = sql + JSON.stringify(values);
     const key = this.cacheOptions.keyPrefix + this.hash(query);
 
